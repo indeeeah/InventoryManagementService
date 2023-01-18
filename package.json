@@ -2,9 +2,9 @@
   "name": "inventorymanagementservice",
   "version": "1.0.0",
   "description": "재고 관리 서비스 프로젝트입니다.",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "server": "nodemon src/main.js",
+    "server": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {

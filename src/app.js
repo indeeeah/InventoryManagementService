@@ -5,14 +5,14 @@
 
 const express = require("express");
 const cors = require('cors');
-const http = require('http').createServer(app),
-    port = 8001;
+const viewsRouter = require('./routers/views-router');
 
 const app = express();
 
 // prevent CORS error
 app.use(cors());
 
-http.listen(port, () => {
-    console.log(`http://localhost:${port}`);
-});
+// vue router
+app.use(viewsRouter);
+
+module.exports = app;
