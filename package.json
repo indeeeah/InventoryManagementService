@@ -1,0 +1,32 @@
+{
+  "name": "inventorymanagementservice",
+  "version": "1.0.0",
+  "description": "재고 관리 서비스 프로젝트입니다.",
+  "main": "app.js",
+  "scripts": {
+    "server": "nodemon src/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": "14.16.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/indeeeah/InventoryManagementService.git"
+  },
+  "author": "SOOMINI",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/indeeeah/InventoryManagementService/issues"
+  },
+  "homepage": "https://github.com/indeeeah/InventoryManagementService#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.15",
+    "nodemon": "^2.0.20"
+  }
+}

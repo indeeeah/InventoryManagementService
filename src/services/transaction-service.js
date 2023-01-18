@@ -1,0 +1,56 @@
+/**
+ * Created by SooMinKim on 2023-01-18
+ */
+
+const RDS = require('../db/models/transaction-model');
+
+class TransactionService {
+    constructor () {
+        this.rds = undefined;
+    }
+
+    /*********************************************************
+    * Transaction - RDS
+    ********************************************************/
+    async startRDSConnection (params) {
+        if (!this.rds) {
+            this.rds = new RDS();
+        }
+
+        return await this.rds.connect(params);
+    };
+
+    async endRDSConnection (inst) {
+        if (!this.rds) {
+            return ;
+        }
+
+        return await this.rds.disconnect(inst);
+    };
+
+    async startRDSTransaction (inst) {
+        return await this.rds.startTransaction(inst);
+    };
+
+    async commitRDSTransaction (inst) {
+        return await this.rds.commitTransaction(inst);
+    };
+
+    async rollbackRDSTransaction (inst) {
+        return await this.rds.rollbackTransaction(inst);
+    };
+
+    async setRDSTimezone (inst) {
+        return await this.rds.setTimezone(inst);
+    };
+
+    async getRDSLock (inst, lockName, timeout) {
+        return await this.rds.getLock(inst, lockName, timeout ? timeout : 10);
+    };
+
+    async releaseRDSLock (inst, lockName) {
+        return await this.rds.releaseLock(inst, lockName);
+    };
+}
+
+module.exports = TransactionService;
