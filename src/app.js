@@ -10,13 +10,23 @@ const userRouter = require('./routers/user-router');
 
 const app = express();
 
+const allowedOrigins = ["http://localhost:8001", "http://localhost:8080"];
+
 // prevent CORS error
-app.use(cors());
+app.use(cors({
+    origin: '*',
+}));
+
+// Content-Type: appliocation/json
+app.use(express.json());
+
+// Content-Type: application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: false }));
 
 // vue router
 app.use(viewsRouter);
 
 // api router
-app.use('/api/user', userRouter);
+app.use('/api', userRouter);
 
 module.exports = app;

@@ -35,6 +35,8 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
+
   <script src="./js/register.js" type="module" defer></script>
 </head>
 
@@ -64,7 +66,7 @@
                     <p class="text-center small">Enter your personal details to create account</p>
                   </div>
 
-                  <form class="row g-3 needs-validation" id="registerForm" novalidate>
+                  <form class="row g-3 needs-validation" id="registerForm" method="post" novalidate>
                     <div class="col-12">
                       <label for="yourName" class="form-label">Your Name</label>
                       <input type="text" name="name" class="form-control" id="yourName" required>
@@ -106,6 +108,7 @@
                       </div>
                     </div>
                     <div class="col-12">
+                      <!-- <button class="btn btn-primary w-100" type="submit" id="registerBtn" onclick="register()">Create Account</button> -->
                       <button class="btn btn-primary w-100" type="submit" id="registerBtn">Create Account</button>
                     </div>
                     <div class="col-12">
@@ -151,3 +154,22 @@
 </body>
 
 </html>
+<!-- 
+<script>
+  function register()
+  {
+    axios({
+      method: 'post',
+      url: '/api/user',
+      data: {
+        test: "test"
+      }
+    }).then((response) => {
+      console.log('response : ', response);
+      alert(`정상적으로 회원가입되었습니다.`);
+    }).catch((err) => {
+      console.log('err : ', err);
+      alert(`문제가 발생하였습니다. 확인 후 다시 시도해 주세요 ${e.message}`);
+    })
+  }
+</script> -->

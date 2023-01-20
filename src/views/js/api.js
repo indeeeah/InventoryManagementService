@@ -42,15 +42,20 @@ class Api {
             try {
                 let apiUrl = endPoint;
                 console.log(`\n : (Api.post) request to ${apiUrl} \n`);
-                console.log('data', data);
+
                 let res = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
+                    mode: "cors",
                     body: JSON.stringify(data),
+                }).catch((e) => {
+                    console.log('ERROR : ', e);
                 });
+
+                console.log('res :::::::::::::: ', res);
 
                 return await this._getResponse(res);
             } catch (e) {
