@@ -9,16 +9,30 @@ const base = require('../lib/base');
 class User extends base{
     constructor () {
         super();
+        this._getUserDbItems = async (params) => {
+            let dbParams = {
+                dbInst: this._rdsInst,
+                email: params.email
+            };
+
+            return await this._dbHandler.getUserByEmail(dbParams);
+        }
     };
 
     async addUser (event) {
         try {
+            let params = this._getParams(event);
+            await this._initRDS();
 
-            console.log('event : ', event.body);
+            let dbItems = await this._getUserDbItems(params);
+            console.log('dbItems : ', JSON.stringify(dbItems));
+
+            await this._destroyRDS();
 
             return {errorCode: eCode().success, message: eCode.getErrorMsg(eCode().success)};
         } catch (e) {
-            console.log(e);
+            await this._restoreRDS();
+            console.log(`\n : (user-control.addUser) Failed to add user ${e} \n`);
             throw e;
         }
     };
@@ -27,10 +41,8 @@ class User extends base{
 module.exports.User = User;
 module.exports.user = async (event) => {
     try {
-        console.log(`\n (user-control.user) \n`);
+        console.log(`\n (user-control.user) ${event.body}\n`);
 
-        let message = `successfully have done`;
-        let statusCode = 200;
         let result = {errorCode: eCode().success, message: eCode.getErrorMsg(eCode().success)};
 
         switch (event.method) {
@@ -55,10 +67,6 @@ module.exports.user = async (event) => {
 
         return {
             statusCode: eCode.getStatusCode(result.errorCode),
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-            },
             body: JSON.stringify(result)
         };
     } catch (e) {

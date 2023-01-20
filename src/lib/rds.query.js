@@ -24,3 +24,10 @@ module.exports.getLock = (name, sec) => {
 module.exports.releaseLock = (name) => {
     return `SELECT RELEASE_LOCK('${name}') AS db_lock`;
 };
+
+/*********************************************************
+ * User
+ ********************************************************/
+module.exports.getUserByEmail = (params) => {
+    return `SELECT * FROM user WHERE email='${params.email}' and vaild=1`;
+};
