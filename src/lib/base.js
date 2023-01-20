@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const TransactionService = require('../services/transaction-service');
+const DB = require('./db');
 const config = require('../../config');
 
 class Base {
@@ -11,7 +11,7 @@ class Base {
         /*********************************************************
         * DB
         ********************************************************/
-        this._tHandler = new TransactionService();
+        this._dbHandler = new DB();
         this._rdsInst = undefined;
         this._lockName = '';
         this._setLockName = (lockName) => { this._lockName = lockName; };
@@ -93,7 +93,7 @@ class Base {
         /*********************************************************
         * Parameters
         ********************************************************/
-        this._getParams = (event) => JSON.parse(event.body);
+        this._getParams = (event) => event.body;
         this._getPathParams = (event) => event.pathParameters ? event.pathParameters : {};
         this._getQueryParams = (event) => event.queryStringParameters ? event.queryStringParameters : {};
         this._getHeaderParams = (event) => event.headers ? event.headers : {};

@@ -2,9 +2,9 @@
  * Created by SooMinKim on 2023-01-18
  */
 
-const RDS = require('../db/models/transaction-model');
+const RDS = require('./rds.db');
 
-class TransactionService {
+class DB {
     constructor () {
         this.rds = undefined;
     }
@@ -51,6 +51,17 @@ class TransactionService {
     async releaseRDSLock (inst, lockName) {
         return await this.rds.releaseLock(inst, lockName);
     };
+
+    /*********************************************************
+    * User
+    ********************************************************/
+    async getUserByEmail (params) {
+        try {
+            return await this.rds.getUserByEmail(params.dbInst, params);
+        } catch (e) {
+            throw e;
+        }
+    }
 }
 
-module.exports = TransactionService;
+module.exports = DB;

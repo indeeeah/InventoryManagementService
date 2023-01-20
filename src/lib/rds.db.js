@@ -3,7 +3,7 @@
  */
 
 const mysql = require('mysql');
-const query = require('../queries/transaction-query');
+const query = require('./rds.query');
 
 /**
  * Run MySql query
@@ -45,7 +45,7 @@ let disconnectDb = (dbInst) => {
     });
 };
 
-class TransactionModel {
+class RdsDB {
     constructor () {
         this.params = {
             host: '',
@@ -163,7 +163,23 @@ class TransactionModel {
             console.log(`\n : (RDS.releaseLock) Failed to release lock DB \n`);
             throw e;
         }
+    };
+
+    /*********************************************************
+    * Transaction
+    ********************************************************/
+    async getUserByEmail (dbInst, params) {
+        try {
+            let result = {};
+
+            result['user'] = await executeSQL(dbInst, query.getUserByEmail(params));
+
+            return result;
+        } catch (e) {
+            console.log(`\n : (RDS.getUserByEmail) Failed to get user by email \n`);
+            throw e;
+        }
     }
 }
 
-module.exports = TransactionModel;
+module.exports = RdsDB;

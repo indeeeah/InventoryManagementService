@@ -21,12 +21,19 @@ app.use(cors({
 app.use(express.json());
 
 // Content-Type: application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
 // vue router
 app.use(viewsRouter);
 
 // api router
 app.use('/api', userRouter);
+// app.post('/api/register', async (req, res) => {
+//     console.log('req : ', req.body);
+//     let result = await userControl.user(req);
+
+//     console.log('result : ', result);
+//     return result;
+// });
 
 module.exports = app;
