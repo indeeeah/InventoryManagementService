@@ -9,9 +9,11 @@ const userControl = require('../controlers/user-control');
 const userRouter = express.Router();
 
 // Added user
-userRouter.post('/', async (req, res, next) => {
+userRouter.post('/register', async (req, res, next) => {
+    console.log('req : ', req.body);
     let result = await userControl.user(req);
-    console.log('req : ', res);
+
+    console.log('result : ', result);
     return result;
 });
 

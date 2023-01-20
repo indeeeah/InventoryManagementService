@@ -15,8 +15,11 @@ class User extends base{
         try {
 
             console.log('event : ', event.body);
+
+            return {errorCode: eCode().success, message: eCode.getErrorMsg(eCode().success)};
         } catch (e) {
             console.log(e);
+            throw e;
         }
     };
 };
@@ -24,9 +27,11 @@ class User extends base{
 module.exports.User = User;
 module.exports.user = async (event) => {
     try {
-        let result = {};
+        console.log(`\n (user-control.user) \n`);
 
-        console.log('event : ', event.method);
+        let message = `successfully have done`;
+        let statusCode = 200;
+        let result = {errorCode: eCode().success, message: eCode.getErrorMsg(eCode().success)};
 
         switch (event.method) {
             case 'GET':
@@ -48,7 +53,14 @@ module.exports.user = async (event) => {
                 break;
         }
 
-        return result;
+        return {
+            statusCode: eCode.getStatusCode(result.errorCode),
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+            },
+            body: JSON.stringify(result)
+        };
     } catch (e) {
         console.log('e', e)   
     }
