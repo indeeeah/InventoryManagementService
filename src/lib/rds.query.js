@@ -26,8 +26,39 @@ module.exports.releaseLock = (name) => {
 };
 
 /*********************************************************
+ * Last insert
+ ********************************************************/
+module.exports.getLastInsertId = () => {
+    return `SELECT LAST_INSERT_ID()`;
+};
+
+/*********************************************************
  * User
  ********************************************************/
 module.exports.getUserByEmail = (params) => {
-    return `SELECT * FROM user WHERE email='${params.email}' and vaild=1`;
+    return `SELECT * FROM user WHERE email='${params.email}' AND valid=1`;
+};
+module.exports.addNewUser = (params) => {
+    return `INSERT INTO user VALUES (NULL,
+        '${params.name}',
+        '${params.email}',
+        '${params.password}',
+        ${params.company_id},
+        1,
+        now(),
+        NULL)`;
+};
+
+/*********************************************************
+ * Company
+ ********************************************************/
+module.exports.getCompanyByName = (params) => {
+    return `SELECT * FROM company WHERE name='${params.company}' AND valid=1`;
+};
+module.exports.addNewCompany = (params) => {
+    return `INSERT INTO company VALUES (NULL,
+        '${params.company}',
+        1,
+        now(),
+        NULL)`;
 };

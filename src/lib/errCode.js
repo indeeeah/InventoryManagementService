@@ -4,7 +4,14 @@
 'use strict';
 
 let errorCode = {
-    success: 0,
+    Success: 0,
+
+    /** Common Errors */
+    UnknownMethod: 100,
+    InvalidParams: 101,
+
+    /** User */
+    UserExistedEmail: 1000,
 };
 
 module.exports = function () {
@@ -12,26 +19,42 @@ module.exports = function () {
 };
 
 
-let getErrorMsg = (code) => {
+let _getErrorMsg = (code) => {
     let msg = '';
 
     switch (code) {
-        case errorCode.success:
+        case errorCode.Success:
             msg = `Success`;
+            break;
+        case errorCode.UnknownMethod:
+            msg = `잘못된 요청 메소드입니다.`;
+            break;
+        case errorCode.InvalidParams:
+            msg = `필수 입력 파라메터가 없습니다.`;
+            break;
+        case errorCode.UserExistedEmail:
+            msg = `이미 등록되어 있는 이메일입니다. \n 다른 이메일로 시도해주세요.`;
             break;
         default:
             break;
     };
+
+    return msg;
 };
 
-module.exports.getErrorMsg = getErrorMsg;
+module.exports.getErrorMsg = _getErrorMsg;
 
 
-module.exports.getStatusCode = function (code) {
+let _getStatusCode = (code) => {
     let statusCode = 200;
 
     switch (code) {
-        case errorCode.success:
+        case errorCode.Success:
+            break;
+        case errorCode.UnknownMethod:
+        case errorCode.InvalidParams:
+        case errorCode.UserExistedEmail:
+            statusCode = 400;
             break;
         default:
             break;
@@ -40,12 +63,14 @@ module.exports.getStatusCode = function (code) {
     return statusCode;
 };
 
+module.exports.getStatusCode = _getStatusCode;
+
 
 let _throwException = (code, errMsg, data) => {
-    let err = new Error('error');
+    let err = new Error('inv_error');
 
     err.code = code;
-    err.error = true;
+    err.inv_error = true;
 
     errMsg ? err['errMsg'] = errMsg : 0;
     data ? err['data'] = data : 0;
@@ -54,3 +79,26 @@ let _throwException = (code, errMsg, data) => {
 };
 
 module.exports.throwException = _throwException;
+
+
+module.exports.handleException = (event, e, name) => {
+    if (e.code && e.inv_error) {
+        let body = {
+            errorCode: e.code,
+            message: e.errMsg ? e.errMsg : _getErrorMsg(e.code)
+        };
+
+        if (e.data) {
+            body['data'] = e.data;
+        }
+
+        let result = {
+            statusCode: _getStatusCode(e.code),
+            body : JSON.stringify(body)
+        };
+
+        return result;
+    }
+
+    console.log(`\n : (${name ? name : event.path}) Exception on \n`);
+};

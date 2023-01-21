@@ -61,7 +61,15 @@ class DB {
         } catch (e) {
             throw e;
         }
-    }
+    };
+
+    async addUser (params) {
+        try {
+            return await this.rds.addUser(params.dbInst, params);
+        } catch (e) {
+            throw e;
+        }
+    };
 }
 
 module.exports = DB;
