@@ -2,7 +2,7 @@
  * Created by SooMinKim on 2023-01-18
  */
 
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const query = require('./rds.query');
 
 /**
@@ -75,7 +75,7 @@ class RdsDB {
 
             return this.dbInst;
         } catch (e) {
-            console.log(`\n : (RDS.connect) Failed to connect DB : ${JSON.stringify(params)} \n`);
+            console.log(`\n : (RDS.connect) Failed to connect DB : ${JSON.stringify(params)} \n`, e);
             throw e;
         }
     };
@@ -86,9 +86,7 @@ class RdsDB {
 
             await disconnectDb(inst);
         } catch (e) {
-            console.log(e.message);
-            console.log(e.stack);
-            console.log(`\n : (RDS.disconnect) Failed to disconnect DB \n`);
+            console.log(`\n : (RDS.disconnect) Failed to disconnect DB \n`, e);
             throw e;
         }
     };
@@ -99,7 +97,7 @@ class RdsDB {
 
             await executeSQL(inst, query.startTransaction());
         } catch (e) {
-            console.log(`\n : (RDS.startTransaction) Failed to start transaction DB \n`);
+            console.log(`\n : (RDS.startTransaction) Failed to start transaction DB \n`, e);
             throw e;
         }
     };
@@ -110,7 +108,7 @@ class RdsDB {
 
             await executeSQL(inst, query.commit())
         } catch (e) {
-            console.log(`\n : (RDS.commitTransaction) Failed to commit transaction DB \n`);
+            console.log(`\n : (RDS.commitTransaction) Failed to commit transaction DB \n`, e);
             throw e;
         }
     };
@@ -121,7 +119,7 @@ class RdsDB {
 
             await executeSQL(inst, query.rollback());
         } catch (e) {
-            console.log(`\n : (RDS.rollbackTransaction) Failed to rollback transaction DB \n`);
+            console.log(`\n : (RDS.rollbackTransaction) Failed to rollback transaction DB \n`, e);
             throw e;
         }
     };
@@ -132,7 +130,7 @@ class RdsDB {
 
             await executeSQL(inst, query.setTimezone());
         } catch (e) {
-            console.log(`\n : (RDS.setTimezone) Failed to set timezone DB \n`);
+            console.log(`\n : (RDS.setTimezone) Failed to set timezone DB \n`, e);
             throw e;
         }
     };
@@ -145,7 +143,7 @@ class RdsDB {
         } catch (e) {
             await executeSQL(inst, query.releaseLock(lockName));
 
-            console.log(`\n : (RDS.getLock) Failed to get lock DB \n`);
+            console.log(`\n : (RDS.getLock) Failed to get lock DB \n`, e);
             throw e;
         }
     };
@@ -160,13 +158,13 @@ class RdsDB {
 
             await executeSQL(inst, query.releaseLock(lockName));
 
-            console.log(`\n : (RDS.releaseLock) Failed to release lock DB \n`);
+            console.log(`\n : (RDS.releaseLock) Failed to release lock DB \n`, e);
             throw e;
         }
     };
 
     /*********************************************************
-    * Transaction
+    * User
     ********************************************************/
     async getUserByEmail (dbInst, params) {
         try {
@@ -176,10 +174,29 @@ class RdsDB {
 
             return result;
         } catch (e) {
-            console.log(`\n : (RDS.getUserByEmail) Failed to get user by email \n`);
+            console.log(`\n : (RDS.getUserByEmail) Failed to get user by email : ${JSON.stringify(params)} \n`, e);
             throw e;
         }
-    }
+    };
+
+    async addUser (dbInst, params) {
+        try {
+            let company = await executeSQL(dbInst, query.getCompanyByName(params));
+
+            if (company && company.length > 0) {
+                params['company_id'] = company[0].id;
+            } else {
+                await executeSQL(dbInst, query.addNewCompany(params));
+                let newCompany = await executeSQL(dbInst, query.getLastInsertId());
+                params['company_id'] = newCompany[0]['LAST_INSERT_ID()'];
+            }
+
+            await executeSQL(dbInst, query.addNewUser(params));
+        } catch (e) {
+            console.log(`\n : (RDS.addUser) Failed to add user : ${JSON.stringify(params)} \n`, e);
+            throw e;
+        }
+    };
 }
 
 module.exports = RdsDB;

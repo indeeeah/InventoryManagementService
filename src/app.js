@@ -10,12 +10,8 @@ const userRouter = require('./routers/user-router');
 
 const app = express();
 
-const allowedOrigins = ["http://localhost:8001", "http://localhost:8080"];
-
 // prevent CORS error
-app.use(cors({
-    origin: '*',
-}));
+app.use(cors());
 
 // Content-Type: appliocation/json
 app.use(express.json());
@@ -27,13 +23,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(viewsRouter);
 
 // api router
-app.use('/api', userRouter);
-// app.post('/api/register', async (req, res) => {
-//     console.log('req : ', req.body);
-//     let result = await userControl.user(req);
-
-//     console.log('result : ', result);
-//     return result;
-// });
+app.use('/api/user', userRouter);
 
 module.exports = app;

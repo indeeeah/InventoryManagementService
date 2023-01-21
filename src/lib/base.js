@@ -20,44 +20,44 @@ class Base {
         // Transaction - RDS
         this._startRDSConnection = async () => {
             if (this._rdsInst === undefined) {
-                this._rdsInst = await this._tHandler.startRDSConnection(config.db.rds);
+                this._rdsInst = await this._dbHandler.startRDSConnection(config.db.rds);
             }
         };
         this._endRDSConnection = async () => {
             if (this._rdsInst !== undefined) {
-                await this._tHandler.endRDSConnection(this._rdsInst);
+                await this._dbHandler.endRDSConnection(this._rdsInst);
                 this._rdsInst = undefined;
             }
         };
         this._startRDSTransaction = async () => {
             if (this._rdsInst !== undefined) {
-                await this._tHandler.startRDSTransaction(this._rdsInst);
+                await this._dbHandler.startRDSTransaction(this._rdsInst);
             }
         };
         this._commitRDSTransaction = async () => {
             if (this._rdsInst !== undefined) {
-                await this._tHandler.commitRDSTransaction(this._rdsInst);
+                await this._dbHandler.commitRDSTransaction(this._rdsInst);
             }
         };
         this._rollbackRDSTransaction = async () => {
             if (this._rdsInst !== undefined) {
-                await this._tHandler.rollbackRDSTransaction(this._rdsInst);
+                await this._dbHandler.rollbackRDSTransaction(this._rdsInst);
             }
         };
         this._setRDSTimezone = async () => {
             if (this._rdsInst !== undefined) {
-                return await this._tHandler.setRDSTimezone(this._rdsInst);
+                return await this._dbHandler.setRDSTimezone(this._rdsInst);
             }
         };
 
         this._getRDSLock = async (lockName, timeout) => {
             if (this._rdsInst !== undefined) {
-                return await this._tHandler.getRDSLock(this._rdsInst, lockName, timeout);
+                return await this._dbHandler.getRDSLock(this._rdsInst, lockName, timeout);
             }
         };
         this._releaseRDSLock = async (lockName) => {
             if (this._rdsInst !== undefined) {
-                return await this._tHandler.releaseRDSLock(this._rdsInst, lockName);
+                return await this._dbHandler.releaseRDSLock(this._rdsInst, lockName);
             }
         };
         

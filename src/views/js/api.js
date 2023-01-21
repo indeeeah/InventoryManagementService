@@ -8,10 +8,10 @@ class Api {
         this._getResponse = async (res) => {
             let result = await res.json();
 
-            if (!res.ok) {
-                let { reason } = result;
+            if (result.statusCode !== 200) {
+                let { body } = result;
 
-                throw new Error(reason);
+                throw new Error(body);
             }
 
             return result;
@@ -49,13 +49,8 @@ class Api {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
-                    mode: "cors",
                     body: JSON.stringify(data),
-                }).catch((e) => {
-                    console.log('ERROR : ', e);
                 });
-
-                console.log('res :::::::::::::: ', res);
 
                 return await this._getResponse(res);
             } catch (e) {
