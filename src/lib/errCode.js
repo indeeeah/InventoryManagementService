@@ -7,8 +7,9 @@ let errorCode = {
     Success: 0,
 
     /** Common Errors */
-    UnknownMethod: 100,
-    InvalidParams: 101,
+    UnknownCmd: 100,
+    UnknownMethod: 101,
+    InvalidParams: 102,
 
     /** User */
     UserExistedEmail: 1000,
@@ -25,6 +26,9 @@ let _getErrorMsg = (code) => {
     switch (code) {
         case errorCode.Success:
             msg = `Success`;
+            break;
+        case errorCode.UnknownCmd:
+            msg = `잘못된 요청 패스입니다.`;
             break;
         case errorCode.UnknownMethod:
             msg = `잘못된 요청 메소드입니다.`;
@@ -51,6 +55,7 @@ let _getStatusCode = (code) => {
     switch (code) {
         case errorCode.Success:
             break;
+        case errorCode.UnknownCmd:
         case errorCode.UnknownMethod:
         case errorCode.InvalidParams:
         case errorCode.UserExistedEmail:

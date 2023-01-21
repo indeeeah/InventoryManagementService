@@ -4,13 +4,20 @@
 'use strict'
 
 const express = require('express');
-const userControl = require('../controlers/user-control');
+const User = require('../controlers/userHandler');
 
 const userRouter = express.Router();
 
 // Added user
-userRouter.post('/', async (req, res, next) => {
-    let result = await userControl.user(req);
+userRouter.post('/register', async (req, res, next) => {
+    let result = await User.user(req);
+
+    res.send(result);
+});
+
+// Login
+userRouter.get('/login', async (req, res, next) => {
+    let result = await User.user(req);
 
     console.log('result : ', result);
     res.send(result);
