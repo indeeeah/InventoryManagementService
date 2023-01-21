@@ -3,11 +3,11 @@
  */
 'use strict'
 
-const eCode = require('../lib/errCode');
-const base = require('../lib/base');
-const Crypto = require('../lib/crypto');
+const eCode = require('../../lib/errCode');
+const base = require('../../lib/base');
+const Crypto = require('../../lib/crypto');
 
-class User extends base{
+class Register extends base {
     constructor () {
         super();
         this._checkParams = (params) => (this._isValidParameter(params, 'name') && this._isValidParameter(params, 'email') && this._isValidParameter(params, 'company') && this._isValidParameter(params, 'password'));
@@ -22,7 +22,7 @@ class User extends base{
     
                 return await this._dbHandler.getUserByEmail(dbParams);
             } catch (e) {
-                console.log(`\n : (User._getUserDbItems) Failed to get user DB items \n`, e);
+                console.log(`\n : (Register._getUserDbItems) Failed to get user DB items \n`, e);
                 throw e;
             }
         };
@@ -32,7 +32,7 @@ class User extends base{
     
                 return params;
             } catch (e) {
-                console.log(`\n : (User._encryptPassword) Failed to encrypt password \n`, e);
+                console.log(`\n : (Register._encryptPassword) Failed to encrypt password \n`, e);
                 throw e;
             }
         };
@@ -48,7 +48,7 @@ class User extends base{
 
                 await this._dbHandler.addUser(dbParams);
             } catch (e) {
-                console.log(`\n : (User._addUser) Failed to add user \n`, e);
+                console.log(`\n : (Register._addUser) Failed to add user \n`, e);
                 throw e;
             }
         };
@@ -73,44 +73,39 @@ class User extends base{
             return {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success)};
         } catch (e) {
             await this._restoreRDS();
-            console.log(`\n : (user-control.addUser) Failed to add user \n`, e);
+            console.log(`\n : (Register.addUser) Failed to add user \n`, e);
             throw e;
         }
     };
 };
 
-module.exports.User = User;
-module.exports.user = async (event) => {
+module.exports.Register = Register;
+module.exports.register = async (event) => {
     try {
-        console.log(`\n : (user-control.user) ${JSON.stringify(event.body)}\n`);
+        console.log(`\n : (Register.register) ${JSON.stringify(event.body)}\n`);
 
-        let result = {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success)};
+        let result = {};
 
         switch (event.method) {
-            case 'GET':
-                break;
             case 'POST':
-                result = await (new User()).addUser(event);
+                result = await (new Register()).addUser(event);
                 break;
+            case 'GET':
             case 'PUT':
-                break;
             case 'DELETE':
-                break;
             default:
                 result = {
                     errorCode: eCode().UnknownMethod,
                     message: `Unknown method: ${event.method}`
                 };
 
-                console.log(result);
+                console.log(`\n : (Register.register) Exception on > `, result);
                 break;
         }
 
-        return {
-            statusCode: eCode.getStatusCode(result.errorCode),
-            body: JSON.stringify(result)
-        };
+        return result;
     } catch (e) {
-        return eCode.handleException(event, e);
+        console.log(`\n : (Register.register) Failed to register \n`, e);
+        throw e;
     }
 };
