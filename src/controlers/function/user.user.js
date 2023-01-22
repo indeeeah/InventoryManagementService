@@ -7,10 +7,10 @@ const eCode = require('../../lib/errCode');
 const base = require('../../lib/base');
 const Crypto = require('../../lib/crypto');
 
-class Register extends base {
+class User extends base {
     constructor () {
         super();
-        this._checkParams = (params) => (this._isValidParameter(params, 'name') && this._isValidParameter(params, 'email') && this._isValidParameter(params, 'company') && this._isValidParameter(params, 'password'));
+        this._checkAddUserParams = (params) => (this._isValidParameter(params, 'name') && this._isValidParameter(params, 'email') && this._isValidParameter(params, 'company') && this._isValidParameter(params, 'password'));
         this._isExistedEmail = (dbItems) => (this._isValidProperty(dbItems, 'user'));
 
         this._getUserDbItems = async (params) => {
@@ -22,7 +22,7 @@ class Register extends base {
     
                 return await this._dbHandler.getUserByEmail(dbParams);
             } catch (e) {
-                console.log(`\n : (Register._getUserDbItems) Failed to get user DB items \n`, e);
+                console.log(`\n : (User._getUserDbItems) Failed to get user DB items \n`, e);
                 throw e;
             }
         };
@@ -32,7 +32,7 @@ class Register extends base {
     
                 return params;
             } catch (e) {
-                console.log(`\n : (Register._encryptPassword) Failed to encrypt password \n`, e);
+                console.log(`\n : (User._encryptPassword) Failed to encrypt password \n`, e);
                 throw e;
             }
         };
@@ -48,16 +48,33 @@ class Register extends base {
 
                 await this._dbHandler.addUser(dbParams);
             } catch (e) {
-                console.log(`\n : (Register._addUser) Failed to add user \n`, e);
+                console.log(`\n : (User._addUser) Failed to add user \n`, e);
                 throw e;
             }
         };
     };
 
+    async getUser (event) {
+        try {
+            let params = this._getPathParams(event);
+
+            await this._initRDS();
+
+            let result = await this._getUser(params);
+
+            await this._destroyRDS();
+
+            return {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success), data: result};
+        } catch (e) {
+            await this._restoreRDS();
+            
+        }
+    };
+
     async addUser (event) {
         try {
             let params = this._getParams(event);
-            if (!this._checkParams(params)) {eCode.throwException(eCode().InvalidParams)};
+            if (!this._checkAddUserParams(params)) {eCode.throwException(eCode().InvalidParams)};
 
             await this._initRDS();
 
@@ -73,24 +90,25 @@ class Register extends base {
             return {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success)};
         } catch (e) {
             await this._restoreRDS();
-            console.log(`\n : (Register.addUser) Failed to add user \n`, e);
+            console.log(`\n : (User.addUser) Failed to add user \n`, e);
             throw e;
         }
     };
 };
 
-module.exports.Register = Register;
-module.exports.register = async (event) => {
+module.exports.User = User;
+module.exports.user = async (event) => {
     try {
-        console.log(`\n : (Register.register) ${JSON.stringify(event.body)}\n`);
+        console.log(`\n : (User.user) ${JSON.stringify(event.body)} \n`);
 
         let result = {};
 
         switch (event.method) {
-            case 'POST':
-                result = await (new Register()).addUser(event);
-                break;
             case 'GET':
+
+            case 'POST':
+                result = await (new User()).addUser(event);
+                break;
             case 'PUT':
             case 'DELETE':
             default:
@@ -99,13 +117,13 @@ module.exports.register = async (event) => {
                     message: `Unknown method: ${event.method}`
                 };
 
-                console.log(`\n : (Register.register) Exception on > `, result);
+                console.log(`\n : (User.user) Exception on > `, result);
                 break;
         }
 
         return result;
     } catch (e) {
-        console.log(`\n : (Register.register) Failed to register \n`, e);
+        console.log(`\n : (User.user) Failed to user \n`, e);
         throw e;
     }
 };
