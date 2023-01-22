@@ -8,11 +8,11 @@ const eCode = require('../lib/errCode');
 module.exports.user = async (event) => {
     try {
         let result = {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success)};
-        let cmd = event.path.split('/')[1];
+        let cmd = event.path.split('/')[1] !== '' ? event.path.split('/')[1] : 'user';
 
         switch (cmd) {
-            case 'register':
-                result = await (require('./function/user.register')).register(event);
+            case 'user':
+                result = await (require('./function/user.user')).user(event);
                 break;
             default:
                 result = {

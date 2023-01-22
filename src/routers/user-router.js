@@ -9,7 +9,7 @@ const User = require('../controlers/userHandler');
 const userRouter = express.Router();
 
 // Added user
-userRouter.post('/register', async (req, res, next) => {
+userRouter.post('/', async (req, res, next) => {
     let result = await User.user(req);
 
     res.send(result);

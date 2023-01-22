@@ -20,7 +20,7 @@ function addAllEvents () {
 // request api
 async function _register () {
     try {
-        let url = '/api/user/register';
+        let url = '/api/user';
         let params = {
             name: nameInput.value,
             email: emailInput.value,
