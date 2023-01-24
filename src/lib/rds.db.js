@@ -166,6 +166,32 @@ class RdsDB {
     /*********************************************************
     * User
     ********************************************************/
+    async getAllUser (dbInst) {
+        try {
+            let result = {};
+
+            result['user'] = await executeSQL(dbInst, query.getAllUser());
+
+            return result;
+        } catch (e) {
+            console.log(`\n : (RDS.getUser) Failed to get all user \n`, e);
+            throw e;
+        }
+    };
+
+    async getUserById (dbInst, params) {
+        try {
+            let result = {};
+
+            result['user'] = await executeSQL(dbInst, query.getUserById(params));
+
+            return result;
+        } catch (e) {
+            console.log(`\n : (RDS.getUserById) Failed to get user by id : ${JSON.stringify(params)} \n`, e);
+            throw e;
+        }
+    }
+
     async getUserByEmail (dbInst, params) {
         try {
             let result = {};

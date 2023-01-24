@@ -3,16 +3,35 @@
  */
 'use strict'
 
-const eCode = require('../../lib/errCode');
-const base = require('../../lib/base');
-const Crypto = require('../../lib/crypto');
+const eCode = require('../../../lib/errCode');
+const base = require('../../../lib/base');
+const Crypto = require('../../../lib/crypto');
 
 class User extends base {
     constructor () {
         super();
+        this._hasIdProperty = (params) => (this._isValidParameter(params, 'id'));
         this._checkAddUserParams = (params) => (this._isValidParameter(params, 'name') && this._isValidParameter(params, 'email') && this._isValidParameter(params, 'company') && this._isValidParameter(params, 'password'));
         this._isExistedEmail = (dbItems) => (this._isValidProperty(dbItems, 'user'));
 
+        this._getUser = async (params) => {
+            try {
+                let dbParams = {
+                    dbInst: this._rdsInst
+                };
+
+                if (this._hasIdProperty(params)) {
+                    dbParams['user_id'] = params.id;
+
+                    return await this._dbHandler.getUserById(params);
+                }
+
+                return await this._dbHandler.getAllUser(params);
+            } catch (e) {
+                console.log(`\n : (User._getUser) Failed to get user \n`, e);
+                throw e;
+            }
+        };
         this._getUserDbItems = async (params) => {
             try {
                 let dbParams = {
@@ -49,6 +68,19 @@ class User extends base {
                 await this._dbHandler.addUser(dbParams);
             } catch (e) {
                 console.log(`\n : (User._addUser) Failed to add user \n`, e);
+                throw e;
+            }
+        };
+        this._updateUser = async (params) => {
+            try {
+                let dbParams = {
+                    dbInst: this._rdsInst,
+                    user_id: params.user_id
+                };
+
+                
+            } catch (e) {
+                console.log(`\n : (User._updateUser) Failed to update user \n`, e);
                 throw e;
             }
         };
@@ -94,6 +126,39 @@ class User extends base {
             throw e;
         }
     };
+
+    async updateUser (event) {
+        try {
+            let pathParams = this._getPathParams(event);
+            if (!this._hasIdProperty(pathParams)) {eCode.throwException(eCode().InvalidParams)};
+
+            let params = this._getParams(event);
+            params['user_id'] = pathParams.id;
+
+            await this._updateUser(params);
+
+            return {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success)};
+        } catch (e) {
+            await this._restoreRDS();
+            console.log(`\n : (User.updateUser) Failed to update user \n`, e);
+            throw e;
+        }
+    };
+
+    async deleteUser (event) {
+        try {
+            let params = this._getPathParams(event);
+            if (!this._hasIdProperty(params)) {eCode.throwException(eCode().InvalidParams)};
+
+            await this._deleteUser(params);
+
+            return {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success)};
+        } catch (e) {
+            await this._restoreRDS();
+            console.log(`\n : (User.deleteUser) Failed to delete user \n`, e);
+            throw e;
+        }
+    };
 };
 
 module.exports.User = User;
@@ -105,12 +170,17 @@ module.exports.user = async (event) => {
 
         switch (event.method) {
             case 'GET':
-
+                result = await (new User()).getUser(event);
+                break;
             case 'POST':
                 result = await (new User()).addUser(event);
                 break;
             case 'PUT':
+                result = await (new User()).updateUser(event);
+                break;
             case 'DELETE':
+                result = await (new User()).deleteUser(event);
+                break;
             default:
                 result = {
                     errorCode: eCode().UnknownMethod,
