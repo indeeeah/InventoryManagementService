@@ -55,6 +55,22 @@ class DB {
     /*********************************************************
     * User
     ********************************************************/
+    async getAllUser (params) {
+        try {
+            return await this.rds.getAllUser(params.dbInst);
+        } catch (e) {
+            throw e;
+        }
+    };
+
+    async getUserById (params) {
+        try {
+            return await this.rds.getUserById(params.dbInst, params);
+        } catch (e) {
+            throw e;
+        }
+    };
+
     async getUserByEmail (params) {
         try {
             return await this.rds.getUserByEmail(params.dbInst, params);

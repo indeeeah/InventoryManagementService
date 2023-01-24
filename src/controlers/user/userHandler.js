@@ -3,7 +3,7 @@
  */
 'use strict'
 
-const eCode = require('../lib/errCode');
+const eCode = require('../../lib/errCode');
 
 module.exports.user = async (event) => {
     try {

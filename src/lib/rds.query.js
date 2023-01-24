@@ -35,6 +35,12 @@ module.exports.getLastInsertId = () => {
 /*********************************************************
  * User
  ********************************************************/
+module.exports.getAllUser = () => {
+    return `SELECT * FROM user`;
+};
+module.exports.getUserById = (params) => {
+    return `SELECT * FROM user WHERE id=${params.user_id}`;
+};
 module.exports.getUserByEmail = (params) => {
     return `SELECT * FROM user WHERE email='${params.email}' AND valid=1`;
 };
