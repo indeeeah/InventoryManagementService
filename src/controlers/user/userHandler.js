@@ -14,6 +14,9 @@ module.exports.user = async (event) => {
             case 'user':
                 result = await (require('./function/user.user')).user(event);
                 break;
+            case 'login':
+                result = await (require('./function/user.login')).login(event);
+                break;
             default:
                 result = {
                     errorCode: eCode().UnknownCmd,

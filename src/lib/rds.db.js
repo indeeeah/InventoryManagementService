@@ -223,6 +223,35 @@ class RdsDB {
             throw e;
         }
     };
-}
+
+    async updateUser (dbInst, params) {
+        try {
+            if (params.name) {
+                await executeSQL(dbInst, query.updateUserName(params));
+            }
+            if (params.password) {
+                await executeSQL(dbInst, query.updateUserPassword(params));
+            }
+            if (params.valid) {
+                await executeSQL(dbInst, query.updateUserValid(params));
+            }
+            if (params.description) {
+                await executeSQL(dbInst, query.updateUserDescription(params));
+            }
+        } catch (e) {
+            console.log(`\n : (RDS.updateUser) Failed to update user : ${JSON.stringify(params)} \n`, e);
+            throw e;
+        }
+    };
+
+    async setInvalidUser (dbInst, params) {
+        try {
+            await executeSQL(dbInst, query.setInvalidUser(params));
+        } catch (e) {
+            console.log(`\n (RDS.setInvalidUser) Failed to set invalid user : ${JSON.stringify(params)} \n`, e);
+            throw e;
+        }
+    };
+};
 
 module.exports = RdsDB;

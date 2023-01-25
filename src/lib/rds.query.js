@@ -54,6 +54,21 @@ module.exports.addNewUser = (params) => {
         now(),
         NULL)`;
 };
+module.exports.updateUserName = (params) => {
+    return `UPDATE user SET name='${params.name}' WHERE id=${params.user_id}`;
+};
+module.exports.updateUserPassword = (params) => {
+    return `UPDATE user SET password='${params.password}' WHERE id=${params.user_id}`;
+};
+module.exports.updateUserValid = (params) => {
+    return `UPDATE user SET valid=${params.valid} WHERE id=${params.user_id}`;
+};
+module.exports.updateUserDescription = (params) => {
+    return `UPDATE user SET description='${params.description}' WHERE id=${params.user_id}`;
+};
+module.exports.setInvalidUser = (params) => {
+    return `UPDATE userr SET valid=0 WHERE id=${params.user_id}`;
+};
 
 /*********************************************************
  * Company
