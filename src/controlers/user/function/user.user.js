@@ -11,6 +11,10 @@ class User extends base {
     constructor () {
         super();
         this._hasIdProperty = (params) => (this._isValidParameter(params, 'id'));
+        this._hasPasswordProperty = (params) => (this._isValidParameter(params, 'password'));
+        this._hasNameProperty = (params) => (this._isValidParameter(params, 'name'));
+        this._hasValidProperty = (params) => (this._isValidParameter(params, 'valid'));
+        this._hasDescriptionProperty = (params) => (this._isValidParameter(params, 'descripton'));
         this._checkAddUserParams = (params) => (this._isValidParameter(params, 'name') && this._isValidParameter(params, 'email') && this._isValidParameter(params, 'company') && this._isValidParameter(params, 'password'));
         this._isExistedEmail = (dbItems) => (this._isValidProperty(dbItems, 'user'));
 
@@ -78,9 +82,35 @@ class User extends base {
                     user_id: params.user_id
                 };
 
-                
+                if (this._hasNameProperty(params)) {
+                    dbParams['name'] = params.name;
+                }
+                if (this._hasPasswordProperty(params)) {
+                    dbParams['password'] = params.password;
+                }
+                if (this._hasValidProperty(params)) {
+                    dbParams['valid'] = params.valid;
+                }
+                if (this._hasDescriptionProperty(params)) {
+                    dbParams['description'] = params.description;
+                }
+
+                await this._dbHandler.updateUser(dbParams);
             } catch (e) {
                 console.log(`\n : (User._updateUser) Failed to update user \n`, e);
+                throw e;
+            }
+        };
+        this._setInvalidUser = async (params) => {
+            try {
+                let dbParams = {
+                    dbInst: this._rdsInst,
+                    user_id: params.id
+                }
+
+                await this._dbHandler.setInvalidUser(dbParams);
+            } catch (e) {
+                console.log(`\n : (User._setInvalidUser) Failed to set invalid user \n`, e);
                 throw e;
             }
         };
@@ -135,6 +165,10 @@ class User extends base {
             let params = this._getParams(event);
             params['user_id'] = pathParams.id;
 
+            if (this._hasPasswordProperty(params)) {
+                params = await this._encryptPassword(params);                
+            }
+
             await this._updateUser(params);
 
             return {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success)};
@@ -145,17 +179,17 @@ class User extends base {
         }
     };
 
-    async deleteUser (event) {
+    async setInvalidUser (event) {
         try {
             let params = this._getPathParams(event);
             if (!this._hasIdProperty(params)) {eCode.throwException(eCode().InvalidParams)};
 
-            await this._deleteUser(params);
+            await this._setInvalidUser(params);
 
             return {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success)};
         } catch (e) {
             await this._restoreRDS();
-            console.log(`\n : (User.deleteUser) Failed to delete user \n`, e);
+            console.log(`\n : (User.setInvalidUser) Failed to set invalid user \n`, e);
             throw e;
         }
     };
@@ -179,7 +213,7 @@ module.exports.user = async (event) => {
                 result = await (new User()).updateUser(event);
                 break;
             case 'DELETE':
-                result = await (new User()).deleteUser(event);
+                result = await (new User()).setInvalidUser(event);
                 break;
             default:
                 result = {
