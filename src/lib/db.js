@@ -102,6 +102,41 @@ class DB {
             throw e;
         }
     };
+
+    /*********************************************************
+    * Product - category
+    ********************************************************/
+    async getCategoryByCompanyId (params) {
+        try {
+            return await this.rds.getCategoryByCompanyId(params.dbInst, params);
+        } catch (e) {
+            throw e;
+        }
+    };
+
+    async addCategory (params) {
+        try {
+            return await this.rds.addCategory(params.dbInst, params);
+        } catch (e) {
+            throw e;
+        }
+    };
+
+    async updateCategory (params) {
+        try {
+            return await this.rds.updateCategory(params.dbInst, params);
+        } catch (e) {
+            throw e;
+        }
+    };
+
+    async setInvalidCategory (params) {
+        try {
+            return await this.rds.setInvalidCategory(params.dbInst, params);
+        } catch (e) {
+            throw e;
+        }
+    };
 };
 
 module.exports = DB;

@@ -83,3 +83,30 @@ module.exports.addNewCompany = (params) => {
         now(),
         NULL)`;
 };
+
+/*********************************************************
+ * Company
+ ********************************************************/
+module.exports.getCategoryByCompanyId = (params) => {
+    return `SELECT * FROM category WHERE company_id=${params.company_id}`;
+};
+module.exports.addCategory = (params) => {
+    return `INSERT INTO category VALUES (NULL,
+        '${params.name}',
+        ${params.company_id},
+        1,
+        now(),
+        NULL)`;
+};
+module.exports.updateCategoryName = (params) => {
+    return `UPDATE category SET name='${params.name}' WHERE id=${category_id}`;
+};
+module.exports.updateCategoryValid = (params) => {
+    return `UPDATE category SET valid=${params.valid} WHERE id=${category_id}`;
+};
+module.exports.updateCategoryDescription = (params) => {
+    return `UPDATE category SET description='${params.description}' WHERE id=${category_id}`;
+};
+module.exports.setInvalidCategory = (params) => {
+    return `UPDATE category SET valid=0 WHERE id=${category_id}`;
+};

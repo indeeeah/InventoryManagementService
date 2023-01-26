@@ -106,7 +106,7 @@ class User extends base {
                 let dbParams = {
                     dbInst: this._rdsInst,
                     user_id: params.id
-                }
+                };
 
                 await this._dbHandler.setInvalidUser(dbParams);
             } catch (e) {
@@ -129,7 +129,8 @@ class User extends base {
             return {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success), data: result};
         } catch (e) {
             await this._restoreRDS();
-            
+            console.log(`\n : (User.getUser) Failed to get user \n`, e);
+            throw e;
         }
     };
 
