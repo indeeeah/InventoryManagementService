@@ -252,6 +252,75 @@ class RdsDB {
             throw e;
         }
     };
+
+    /*********************************************************
+    * Product - category
+    ********************************************************/
+    async getCategoryByCompanyId (dbInst, params) {
+        try {
+            let result = {};
+
+            result['category'] = await executeSQL(dbInst, query.getCategoryByCompanyId(params));
+
+            return result;
+        } catch (e) {
+            console.log(`\n : (RDS.getCategoryByCompanyId) Failed to get category by company id : ${JSON.stringify(params)} \n`, e);
+            throw e;
+        }
+    };
+
+    async addCategory (dbInst, params) {
+        try {
+            let result = {};
+
+            await executeSQL(dbInst, query.addCategory(params));
+
+            result['category'] = await executeSQL(dbInst, query.getCategoryByCompanyId(params));
+
+            return result;
+        } catch (e) {
+            console.log(`\n : (RDS.addCategory) Failed to add category : ${JSON.stringify(params)} \n`, e);
+            throw e;
+        }
+    };
+
+    async updateCategory (dbInst, params) {
+        try {
+            let result = {};
+
+            if (params.name) {
+                await executeSQL(dbInst, query.updateCategoryName(params));
+            }
+            if (params.valid) {
+                await executeSQL(dbInst, query.updateCategoryValid(params));
+            }
+            if (params.description) {
+                await executeSQL(dbInst, query.updateCategoryDescription(params));
+            }
+
+            result['category'] = await executeSQL(dbInst, query.getCategoryByCompanyId(params));
+
+            return result;
+        } catch (e) {
+            console.log(`\n : (RDS.updateCategory) Failed to update category : ${JSON.stringify(params)} \n`, e);
+            throw e;
+        }
+    };
+
+    async setInvalidCategory (dbInst, params) {
+        try {
+            let result = {};
+
+            await executeSQL(dbInst, query.setInvalidCategory(params));
+
+            result['category'] = await executeSQL(dbInst, query.getCategoryByCompanyId(params));
+
+            return result;
+        } catch (e) {
+            console.log(`\n : (RDS.setInvalidCategory) Failed to set invalid category : ${JSON.stringify(params)} \n`, e);
+            throw e;
+        }
+    };
 };
 
 module.exports = RdsDB;

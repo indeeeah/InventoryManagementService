@@ -14,6 +14,9 @@ module.exports.product = async (event) => {
             case 'product':
                 result = await (require('./function/product.product')).product(event);
                 break;
+            case 'category':
+                result = await (require('./function/product.category')).category(event);
+                break;
             default:
                 result = {
                     errorCode: eCode().UnknownCmd,
