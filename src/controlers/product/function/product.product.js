@@ -11,8 +11,13 @@ class Product extends base {
         super();
         this._hasIdProperty = (params) => (this._isValidParameter(params, 'id'));
         this._hasCompanyIdProperty = (params) => (this._isValidParameter(params, 'company_id'));
-        this._checkAddProductParams = (params) => (this._isValidParameter(params, 'products'));
-        this._checkUpdateProductParams = (params) => (this._isValidParameter(params, 'products'));
+        this._hasNameProperty = (params) => (this._isValidParameter(params, 'name'));
+        this._hasAmountProperty = (params) => (this._isValidParameter(params, 'amount'));
+        this._hasValidProperty = (params) => (this._isValidParameter(params, 'valid'));
+        this._hasDescriptionProperty = (params) => (this._isValidParameter(params, 'description'));
+        this._hasValueProperty = (params) => (this._isValidParameter(params, 'value'));
+        this._hasValuesProperty = (params) => (this._isValidProperty(params, 'values'));
+        this._checkAddProductParams = (params) => (this._isValidParameter(params, 'name') && this._isValidParameter(params, 'amount'));
 
         this._getProduct = async (params) => {
             try {
@@ -21,7 +26,7 @@ class Product extends base {
                     company_id: params.company_id
                 };
 
-                return await this._dbHandler.getProduct(dbParams);
+                return await this._dbHandler.getProductsByCompanyId(dbParams);
             } catch (e) {
                 console.log(`\n : (Product._getProduct) Failed to get product \n`, e);
                 throw e;
@@ -32,8 +37,13 @@ class Product extends base {
                 let dbParams = {
                     dbInst: this._rdsInst,
                     company_id: params.company_id,
-                    products: params.products
+                    name: params.name,
+                    amount: params.amount
                 };
+
+                if (this._hasValuesProperty(params)) {
+                    dbParams['values'] = params.values;
+                }
 
                 await this._dbHandler.addProduct(dbParams);
             } catch (e) {
@@ -45,8 +55,38 @@ class Product extends base {
             try {
                 let dbParams = {
                     dbInst: this._rdsInst,
-                    products: params.products
+                    product_id: params.product_id
                 };
+
+                if (this._hasNameProperty(params)) {
+                    dbParams['name'] = params.name;
+                }
+                if (this._hasAmountProperty(params)) {
+                    dbParams['amount'] = params.amount;
+                }
+                if (this._hasValidProperty(params)) {
+                    dbParams['valid'] = params.valid;
+                }
+                if (this._hasDescriptionProperty(params)) {
+                    dbParams['descripton'] = params.descripton;
+                }
+                if (this._hasValuesProperty(params)) {
+                    await Promise.all(params.values( async item => {
+                        dbParams['product_category_id'] = item.category_id;
+
+                        if (this._hasValueProperty(item)) {
+                            dbParams['value'] = item.value;
+                        }
+                        if (this._hasValidProperty(item)) {
+                            dbParams['valid'] = item.valid;
+                        }
+                        if (this._hasDescriptionProperty(item)) {
+                            dbParams['description'] = item.description;
+                        }
+
+                        await this._dbHandler.updateProductCategoryValue(dbParams);
+                    }));                   
+                }
 
                 await this._dbHandler.updateProduct(dbParams);
             } catch (e) {
@@ -61,7 +101,7 @@ class Product extends base {
                     product_id: params.id
                 };
 
-                await this._dbHandler.updateProduct(dbParams);
+                await this._dbHandler.setInvalidProduct(dbParams);
             } catch (e) {
                 console.log(`\n : (Product._setInvalidProduct) Failed to set invalid product \n`, e);
                 throw e;
@@ -113,8 +153,11 @@ class Product extends base {
 
     async updateProduct (event) {
         try {
+            let pathParams = this._getPathParams(event);
+            if (!this._hasIdProperty(pathParams)) {eCode.throwException(eCode().InvalidParams)};
+
             let params = this._getParams(event);
-            if (!this._checkUpdateProductParams(params)) {eCode.throwException(eCode().InvalidParams)};
+            params['product_id'] = pathParams.id;
 
             await this._initRDS();
 
