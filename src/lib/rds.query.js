@@ -85,7 +85,51 @@ module.exports.addNewCompany = (params) => {
 };
 
 /*********************************************************
- * Company
+ * Product
+ ********************************************************/
+module.exports.getProductsByCompanyId = (params) => {
+    return `SELECT
+        product.id AS product_id,
+        product.name AS product_name,
+        product.company_id AS company_id,
+        product.amount AS product_amount,
+        product_category.id AS product_category_id,
+        product_category.name AS product_category_name,
+        product_category_value.id AS product_category_value_id,
+        product_category_value.value AS product_category_value_value
+        FROM product
+        INNER JOIN product_category_value ON product.id=product_category_value.product_id AND product_category_value.valid=1
+        INNER JOIN product_category ON product_category_value.product_category_id=product_category.id AND product_category.valid=1
+        WHERE product.valid=1
+        AND product.company_id=${params.company_id}`;
+};
+module.exports.addProduct = (params) => {
+    return `INSERT INTO product VALUES (NULL,
+        '${params.name}',
+        ${params.company_id},
+        ${params.amount},
+        1,
+        now(),
+        NULL)`;
+};
+module.exports.updateProductName = (params) => {
+    return `UPDATE product SET name='${params.name}' WHERE id=${params.product_id}`;
+};
+module.exports.updateProductAmount = (params) => {
+    return `UPDATE product SET amount=${params.amount} WHERE id=${params.product_id}`;
+};
+module.exports.updateProductValid = (params) => {
+    return `UPDATE product SET valid=${params.valid} WHERE id=${params.product_id}`;
+};
+module.exports.updateProductDescription = (params) => {
+    return `UPDATE product SET description='${params.description}' WHERE id=${params.product_id}`;
+};
+module.exports.setInvalidProduct = (params) => {
+    return `UPDATE product SET valid=0 WHERE id=${params.product_id}`;
+};
+
+/*********************************************************
+ * Product - category
  ********************************************************/
 module.exports.getCategoryByCompanyId = (params) => {
     return `SELECT * FROM category WHERE company_id=${params.company_id}`;
@@ -99,14 +143,39 @@ module.exports.addCategory = (params) => {
         NULL)`;
 };
 module.exports.updateCategoryName = (params) => {
-    return `UPDATE category SET name='${params.name}' WHERE id=${category_id}`;
+    return `UPDATE category SET name='${params.name}' WHERE id=${params.category_id}`;
 };
 module.exports.updateCategoryValid = (params) => {
-    return `UPDATE category SET valid=${params.valid} WHERE id=${category_id}`;
+    return `UPDATE category SET valid=${params.valid} WHERE id=${params.category_id}`;
 };
 module.exports.updateCategoryDescription = (params) => {
-    return `UPDATE category SET description='${params.description}' WHERE id=${category_id}`;
+    return `UPDATE category SET description='${params.description}' WHERE id=${params.category_id}`;
 };
 module.exports.setInvalidCategory = (params) => {
-    return `UPDATE category SET valid=0 WHERE id=${category_id}`;
+    return `UPDATE category SET valid=0 WHERE id=${params.category_id}`;
+};
+
+/*********************************************************
+ * Product - category value
+ ********************************************************/
+module.exports.getProductCategoryValueByProductIdAndCategoryId = (params) => {
+    return `SELECT * FROM product_category_value WHERE product_id=${params.product_id} AND product_category_id=${params.product_category_id}`;
+};
+module.exports.addProductCategoryValue = (params) => {
+    return `INSERT INTO product_category_value (NULL,
+        ${params.product_id},
+        ${params.product_category_id},
+        '${params.value}',
+        1,
+        now(),
+        NULL)`;
+};
+module.exports.updateProductCategoryValueValue = (params) => {
+    return `UPDATE product_category_valud SET value='${params.value}'`;
+};
+module.exports.updateProductCategoryValueValid = (params) => {
+    return `UPDATE product_category_valud SET valid=${params.valid}`;
+};
+module.exports.updateProductCategoryValueDescription = (params) => {
+    return `UPDATE product_category_valud SET description='${params.description}'`;
 };

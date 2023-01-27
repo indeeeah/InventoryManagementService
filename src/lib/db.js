@@ -104,6 +104,49 @@ class DB {
     };
 
     /*********************************************************
+    * Product
+    ********************************************************/
+    async getProductsByCompanyId (params) {
+        try {
+            return await this.rds.getProductsByCompanyId(params.dbInst, params);
+        } catch (e) {
+            throw e;
+        }
+    };
+
+    async addProduct (params) {
+        try {
+            return await this.rds.addProduct(params.dbInst, params);
+        } catch (e) {
+            throw e;
+        }
+    };
+
+    async updateProduct (params) {
+        try {
+            return await this.rds.updateProduct(params.dbInst, params);
+        } catch (e) {
+            throw e;
+        }
+    };
+
+    async updateProductCategoryValue (params) {
+        try {
+            return await this.rds.updateProductCategoryValue(params.dbInst, params);
+        } catch (e) {
+            throw e;
+        }
+    };
+
+    async setInvalidProduct (params) {
+        try {
+            return await this.rds.setInvalidProduct(params.dbInst, params);
+        } catch (e) {
+            throw e;
+        }
+    };
+
+    /*********************************************************
     * Product - category
     ********************************************************/
     async getCategoryByCompanyId (params) {
