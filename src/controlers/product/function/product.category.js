@@ -181,16 +181,16 @@ module.exports.category = async (event) => {
 
         switch (event.method) {
             case 'GET':
-                result = await (new (Category())).getCategory(event);
+                result = await (new Category()).getCategory(event);
                 break;
             case 'POST':
-                result = await (new (Category())).addCategory(event);
+                result = await (new Category()).addCategory(event);
                 break;
             case 'PUT':
-                result = await (new (Category())).updateCategory(event);
+                result = await (new Category()).updateCategory(event);
                 break;
             case 'DELETE':
-                result = await (new (Category())).setInvalidCategory(event);
+                result = await (new Category()).setInvalidCategory(event);
                 break;
             default:
                 result = {
