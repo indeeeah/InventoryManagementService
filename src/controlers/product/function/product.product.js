@@ -133,7 +133,7 @@ class Product extends base {
             let pathParams = this._getPathParams(event);
             if (!this._hasCompanyIdProperty(pathParams)) {eCode.throwException(eCode().InvalidParams)};
 
-            let params = this._getPathParams(event);
+            let params = this._getParams(event);
             if (!this._checkAddProductParams(params)) {eCode.throwException(eCode().InvalidParams)};
             params['company_id'] = pathParams.company_id;
 

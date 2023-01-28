@@ -287,7 +287,7 @@ class RdsDB {
                 }));
             }
         } catch (e) {
-            console.log(`\n : (RDS.addProduct) Failed to add product : ${JSON.stringify(params)} \n`, e);
+            console.log(`\n : (RDS.addProduct) Failed to add product \n`, e);
             throw e;
         }
     };

@@ -105,7 +105,7 @@ class Category extends base {
     async addCategory (event) {
         try {
             let pathParams = this._getPathParams(event);
-            if (!this._hasCompanyIdProperty(params)) {eCode.throwException(eCode().InvalidParams)};
+            if (!this._hasCompanyIdProperty(pathParams)) {eCode.throwException(eCode().InvalidParams)};
 
             let params = this._getParams(event);
             if (!this._checkAddCategoryParams(params)) {eCode.throwException(eCode().InvalidParams)};
