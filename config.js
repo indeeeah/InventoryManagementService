@@ -19,4 +19,7 @@ module.exports = {
         password_secret_key: (process.env.INV_PASSWORD_SECRET_KEY || '$C&F)J@NcRfUjXn2r5u8x/A%D*G-KaPd'),
         password_iv: (process.env.INV_PASSWORD_IV || '0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0'),
     },
-}
+    jwt: {
+        secret_key: (process.env.JWT_SECRET_KEY || 'jwt_secret_key'),
+    },
+};

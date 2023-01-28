@@ -20,7 +20,7 @@ class Api {
 
         this.get = async (endPoint, params = '') => {
             try {
-                let apiUrl = `${endPoint}/${params}`;
+                let apiUrl = `${endPoint}`;
                 console.log(`\n : (Api.get) request to ${apiUrl} \n`);
 
                 let res = await fetch(apiUrl, {

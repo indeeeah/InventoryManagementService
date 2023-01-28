@@ -13,6 +13,8 @@ let errorCode = {
 
     /** User */
     UserExistedEmail: 1000,
+    UserInvalidEmail: 1001,
+    UserInvalidPassword: 1002,
 };
 
 module.exports = function () {
@@ -37,7 +39,13 @@ let _getErrorMsg = (code) => {
             msg = `필수 입력 파라메터가 없습니다.`;
             break;
         case errorCode.UserExistedEmail:
-            msg = `이미 등록되어 있는 이메일입니다. \n 다른 이메일로 시도해주세요.`;
+            msg = `이미 등록되어 있는 이메일입니다. \n다른 이메일로 시도해주세요.`;
+            break;
+        case errorCode.UserInvalidEmail:
+            msg = `등록되지 않은 이메일입니다. \n확인 후 다시 시도해주세요.`;
+            break;
+        case errorCode.UserInvalidPassword:
+            msg = `잘못된 비밀번호입니다. \n확인 후 다시 시도해주세요.`;
             break;
         default:
             break;
@@ -59,6 +67,8 @@ let _getStatusCode = (code) => {
         case errorCode.UnknownMethod:
         case errorCode.InvalidParams:
         case errorCode.UserExistedEmail:
+        case errorCode.UserInvalidEmail:
+        case errorCode.UserInvalidPassword:
             statusCode = 400;
             break;
         default:

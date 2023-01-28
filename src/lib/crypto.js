@@ -39,7 +39,7 @@ class Crypto {
             let cipher = crypto.createDecipheriv('aes-256-cbc', encKey, encIv);
 
             let decipherText = cipher.update(encryptedInput, 'base64', 'utf8');
-            decipherText += cipher.update('base64');
+            decipherText += cipher.final('utf8');
             console.log(` : (Crypto.decrypt_aes256abc) plain text(${decipherText.length}) [${decipherText}]`);
 
             return decipherText;

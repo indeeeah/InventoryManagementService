@@ -30,7 +30,7 @@ async function _register () {
 
         await new Api().post(url, params);
     } catch (e) {
-        console.log(`\n : (Register._register) Failed to register \n`);
+        console.log(`\n : (Register._register) Failed to register \n`, e);
         throw e;
     }
 };
@@ -44,7 +44,7 @@ async function register (event) {
 
         alert(`정상적으로 회원가입되었습니다.`);
 
-        window.location.href = '/';
+        window.location.replace('/');
     } catch (e) {
         console.log(`\n : (Register.register) Failed to register \n`, e);
         alert(`문제가 발생하였습니다. 확인 후 다시 시도해 주세요. \n${new Base().getErrorMsg(e.message)}`);

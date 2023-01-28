@@ -3,13 +3,17 @@
  */
 'use strict'
 
+const jwt = require('jsonwebtoken');
 const eCode = require('../../../lib/errCode');
 const base = require('../../../lib/base');
 const Crypto = require('../../../lib/crypto');
+const config = require('../../../../config');
 
 class Login extends base {
     constructor () {
         super();
+        this._jwtSecretKey = config.jwt.secret_key;
+        
         this._checkLoginParams = (params) => (this._isValidParameter(params, 'email') && this._isValidParameter(params, 'password'));
         this._isExistedUser = (dbItems) => (this._isValidProperty(dbItems, 'user'));
 
@@ -45,11 +49,24 @@ class Login extends base {
                 throw e;
             }
         };
+        this._makeJwtToken = (dbItems) => {
+            try {
+                let tokenParams = {
+                    user_id: dbItems.user[0].id,
+                    company_id: dbItems.user[0].company_id
+                };
+
+                return jwt.sign(tokenParams, this._jwtSecretKey);
+            } catch (e) {
+                console.log(`\n : (Login._makeJwtToken) Failed to make jwt token \n`, e);
+                throw e;
+            }
+        };
     };
 
     async login (event) {
         try {
-            let params = this._getHeaderParams(event);
+            let params = this._getParams(event);
             if (!this._checkLoginParams(params)) {eCode.throwException(eCode().InvalidParams)};
 
             await this._initRDS();
@@ -59,9 +76,11 @@ class Login extends base {
             if (!this._isExistedUser(dbItems)) {eCode.throwException(eCode().UserInvalidEmail)}
             if (!await this._isMatchedPassword(params, dbItems)) {eCode.throwException(eCode().UserInvalidPassword)};
 
+            let result = this._makeJwtToken(dbItems);
+
             await this._destroyRDS();
 
-            return {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success), data: dbItems};
+            return {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success), data: result};
         } catch (e) {
             await this._restoreRDS();
             console.log(`\n : (Login.login) Failed to login \n`, e);
@@ -78,10 +97,10 @@ module.exports.login = async (event) => {
         let result = {};
 
         switch (event.method) {
-            case 'GET':
+            case 'POST':
                 result = await (new Login()).login(event);
                 break;
-            case 'POST':
+            case 'GET':
             case 'PUT':
             case 'DELETE':
             default:
