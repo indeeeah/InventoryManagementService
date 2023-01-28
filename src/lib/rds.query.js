@@ -162,7 +162,7 @@ module.exports.getProductCategoryValueByProductIdAndCategoryId = (params) => {
     return `SELECT * FROM product_category_value WHERE product_id=${params.product_id} AND product_category_id=${params.product_category_id}`;
 };
 module.exports.addProductCategoryValue = (params) => {
-    return `INSERT INTO product_category_value (NULL,
+    return `INSERT INTO product_category_value VALUES (NULL,
         ${params.product_id},
         ${params.product_category_id},
         '${params.value}',
