@@ -10,6 +10,17 @@ const Product = require('../controlers/product/productHandler');
 
 const produectRouter = express.Router();
 
+// Get product
+produectRouter.get('/', new UserToken().jwtVerify, async (req, res, next) => {
+    let { company_id } = req;
+
+    req = new EventForm().makeEventForm(req, {company_id: company_id});
+
+    let result = await Product.product(req);
+
+    res.send(result);
+});
+
 // Add product
 produectRouter.post('/', new UserToken().jwtVerify, async (req, res, next) => {
     let { company_id } = req;
@@ -17,7 +28,6 @@ produectRouter.post('/', new UserToken().jwtVerify, async (req, res, next) => {
     req = new EventForm().makeEventForm(req, {company_id: company_id});
 
     let result = await Product.product(req);
-    console.log('result : ', result);
 
     res.send(result);
 });

@@ -260,6 +260,7 @@ class RdsDB {
         try {
             let result = {};
 
+            result['category'] = await executeSQL(dbInst, query.getCategoryByCompanyId(params));
             result['product'] = await executeSQL(dbInst, query.getProductsByCompanyId(params));
 
             return result;
