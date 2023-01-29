@@ -98,8 +98,8 @@ module.exports.getProductsByCompanyId = (params) => {
         product_category_value.id AS product_category_value_id,
         product_category_value.value AS product_category_value_value
         FROM product
-        INNER JOIN product_category_value ON product.id=product_category_value.product_id AND product_category_value.valid=1
-        INNER JOIN product_category ON product_category_value.product_category_id=product_category.id AND product_category.valid=1
+        LEFT OUTER JOIN product_category_value ON product.id=product_category_value.product_id AND product_category_value.valid=1
+        LEFT OUTER JOIN product_category ON product_category_value.product_category_id=product_category.id AND product_category.valid=1
         WHERE product.valid=1
         AND product.company_id=${params.company_id}`;
 };

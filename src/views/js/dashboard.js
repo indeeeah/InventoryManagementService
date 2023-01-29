@@ -54,6 +54,22 @@ function _getAddForm (categoryArr) {
     }
 };
 
+// request api - get product
+async function _getProductArr () {
+    try {
+        let url = '/api/product';
+
+        let response = await new Api().get(url);
+
+        console.log('response : ', JSON.stringify(JSON.parse(response.body).data));
+
+        return JSON.parse(response.body).data.category;
+    } catch (e) {
+        console.log(`\n : (Dashboard._getProductArr) Failed to get product array \n`, e);
+        throw e;
+    }
+};
+
 // display add form
 function _displayAddForm () {
     try {

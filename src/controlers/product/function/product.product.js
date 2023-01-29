@@ -107,6 +107,74 @@ class Product extends base {
                 throw e;
             }
         };
+        this._setCategoryValue = (result, item) => {
+            try {
+                let index = result.findIndex(element => {
+                    return element.product_category_id === item.product_category_id;
+                });
+
+                if (index > -1) {
+                    result[index].product_category_id = item.product_category_id;
+                    result[index].product_category_name = item.product_category_name;
+                    result[index].product_category_value = item.product_category_value_value;
+                }
+
+                return result;
+            } catch (e) {
+                console.log(`\n : (Product._setCategoryValue) Failed to set category value \n`, e);
+                throw e;
+            }
+        };
+        this._trimValueItems = (dbItems, item) => {
+            try {
+                let result = [];
+
+                dbItems.category.forEach(item => {
+                    result.push({
+                        product_category_id: item.id,
+                        product_category_name: item.name,
+                        product_category_value: ''
+                    });
+                });
+
+                result = this._setCategoryValue(result, item);
+
+                return result;
+            } catch (e) {
+                console.log(`\n : (Product._trimValueItems) Failed to trim value items \n`, e);
+                throw e;
+            }
+        };
+        this._trimDbItems = (dbItems) => {
+            try {
+                let result = [];
+
+                dbItems.product.forEach(item => {
+                    let index = result.findIndex(element => {
+                        return element.product_id === item.product_id;
+                    });
+
+                    if (index > -1) {
+                        result[index] = this._setCategoryValue(result[index].product_values, item);
+                    } else {
+                        console.log('ininininin');
+                        let product_values = this._trimValueItems(dbItems, item);
+
+                        result.push({
+                            product_id: item.product_id,
+                            product_name: item.product_name,
+                            product_amount: item.product_amount,
+                            product_values: product_values
+                        });
+                    }
+                });
+
+                return result;
+            } catch (e) {
+                console.log(`\n : (Product._trimDbItems) Failed to trim DB items \n`, e);
+                throw e;
+            }
+        };
     };
 
     async getProduct (event) {
@@ -118,9 +186,13 @@ class Product extends base {
 
             let dbItems = await this._getProduct(params);
 
+            let result = this._trimDbItems(dbItems);
+
+            console.log('result : ', JSON.stringify(result));
+
             await this._destroyRDS();
 
-            return {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success), data: dbItems};
+            return {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success), data: result};
         } catch (e) {
             await this._restoreRDS();
             console.log(`\n : (Product.getProduct) Failed to get product \n`, e);
