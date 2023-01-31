@@ -54,4 +54,16 @@ produectRouter.post('/category', new UserToken().jwtVerify, async (req, res, nex
     res.send(result);
 });
 
+produectRouter.put('/', async (req, res, next) => {
+    let { id } = req.body;
+
+    console.log('req.body : ', req.body);
+
+    req = new EventForm().makeEventForm(req, {id: id});
+
+    let result = await Product.product(req);
+
+    res.send(result);
+});
+
 module.exports = produectRouter;

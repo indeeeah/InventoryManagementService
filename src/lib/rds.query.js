@@ -171,11 +171,11 @@ module.exports.addProductCategoryValue = (params) => {
         NULL)`;
 };
 module.exports.updateProductCategoryValueValue = (params) => {
-    return `UPDATE product_category_valud SET value='${params.value}'`;
+    return `UPDATE product_category_value SET value='${params.value}' WHERE id=${params.product_category_value_id}`;
 };
 module.exports.updateProductCategoryValueValid = (params) => {
-    return `UPDATE product_category_valud SET valid=${params.valid}`;
+    return `UPDATE product_category_value SET valid=${params.valid} WHERE id=${params.product_category_value_id}`;
 };
 module.exports.updateProductCategoryValueDescription = (params) => {
-    return `UPDATE product_category_valud SET description='${params.description}'`;
+    return `UPDATE product_category_value SET description='${params.description}' WHERE id=${params.product_category_value_id}`;
 };
