@@ -298,7 +298,7 @@ class RdsDB {
             if (params.name) {
                 await executeSQL(dbInst, query.updateProductName(params));
             }
-            if (params.amount) {
+            if (params.amount > -1) {
                 await executeSQL(dbInst, query.updateProductAmount(params));
             }
             if (params.valid) {
@@ -333,7 +333,7 @@ class RdsDB {
                 await executeSQL(dbInst, query.addProductCategoryValue(params));
             }
         } catch (e) {
-            console.log(`\n : (RDS.updateProductCategoryValue) Failed to update product category valud : ${JSON.stringify(params)} \n`, e);
+            console.log(`\n : (RDS.updateProductCategoryValue) Failed to update product category value \n`, e);
             throw e;
         }
     };

@@ -71,21 +71,21 @@ class Product extends base {
                     dbParams['descripton'] = params.descripton;
                 }
                 if (this._hasValuesProperty(params)) {
-                    await Promise.all(params.values( async item => {
-                        dbParams['product_category_id'] = item.category_id;
-
-                        if (this._hasValueProperty(item)) {
-                            dbParams['value'] = item.value;
+                    for (let i = 0 ; i < params.values.length ; i++) {
+                        dbParams['product_category_id'] = params.values[i].category_id;
+    
+                        if (this._hasValueProperty(params.values[i])) {
+                            dbParams['value'] = params.values[i].value;
                         }
-                        if (this._hasValidProperty(item)) {
-                            dbParams['valid'] = item.valid;
+                        if (this._hasValidProperty(params.values[i])) {
+                            dbParams['valid'] = params.values[i].valid;
                         }
-                        if (this._hasDescriptionProperty(item)) {
-                            dbParams['description'] = item.description;
+                        if (this._hasDescriptionProperty(params.values[i])) {
+                            dbParams['description'] = params.values[i].description;
                         }
-
+    
                         await this._dbHandler.updateProductCategoryValue(dbParams);
-                    }));                   
+                    }
                 }
 
                 await this._dbHandler.updateProduct(dbParams);
@@ -155,9 +155,8 @@ class Product extends base {
                     });
 
                     if (index > -1) {
-                        result[index] = this._setCategoryValue(result[index].product_values, item);
+                        this._setCategoryValue(result[index].product_values, item);
                     } else {
-                        console.log('ininininin');
                         let product_values = this._trimValueItems(dbItems, item);
 
                         result.push({

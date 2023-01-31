@@ -59,9 +59,9 @@ class Api {
             }
         };
 
-        this.put = async (endPoint, params = '', data) => {
+        this.put = async (endPoint, data) => {
             try {
-                let apiUrl = params === null ? `${endPoint}` : `${endPoint}/${params}`;
+                let apiUrl = endPoint;
                 console.log(`\n : (Api.put) request to ${apiUrl} \n`);
 
                 let res = await fetch(apiUrl, {
