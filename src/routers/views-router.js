@@ -19,5 +19,6 @@ function _setViewPathFormat (resource) {
 viewsRouter.use('/', _setViewPathFormat('home'));
 viewsRouter.use('/register', _setViewPathFormat('register'));
 viewsRouter.use('/dashboard', _setViewPathFormat('dashboard'));
+viewsRouter.use('/profile', _setViewPathFormat('profile'));
 
 module.exports = viewsRouter;

@@ -27,10 +27,10 @@ class User extends base {
                 if (this._hasIdProperty(params)) {
                     dbParams['user_id'] = params.id;
 
-                    return await this._dbHandler.getUserById(params);
+                    return await this._dbHandler.getUserById(dbParams);
                 }
 
-                return await this._dbHandler.getAllUser(params);
+                return await this._dbHandler.getAllUser(dbParams);
             } catch (e) {
                 console.log(`\n : (User._getUser) Failed to get user \n`, e);
                 throw e;
@@ -170,7 +170,11 @@ class User extends base {
                 params = await this._encryptPassword(params);                
             }
 
+            await this._initRDS();
+
             await this._updateUser(params);
+
+            await this._destroyRDS();
 
             return {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success)};
         } catch (e) {
@@ -185,7 +189,11 @@ class User extends base {
             let params = this._getPathParams(event);
             if (!this._hasIdProperty(params)) {eCode.throwException(eCode().InvalidParams)};
 
+            await this._initRDS();
+
             await this._setInvalidUser(params);
+
+            await this._destroyRDS();
 
             return {errorCode: eCode().Success, message: eCode.getErrorMsg(eCode().Success)};
         } catch (e) {

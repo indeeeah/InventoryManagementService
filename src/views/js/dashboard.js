@@ -4,7 +4,6 @@
 'use strict'
 
 import { Api } from './api.js';
-import { Base } from './base.js';
 
 const product_table = document.querySelector('#product-table');
 const addIconBtn = document.querySelector('#addIconBtn');
