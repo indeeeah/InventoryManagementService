@@ -39,7 +39,18 @@ module.exports.getAllUser = () => {
     return `SELECT * FROM user`;
 };
 module.exports.getUserById = (params) => {
-    return `SELECT * FROM user WHERE id=${params.user_id}`;
+    return `SELECT
+    user.id AS id,
+    user.name AS name,
+    user.email AS email,
+    user.password AS password,
+    user.valid AS valid,
+    user.description AS description,
+    company.id AS company_id,
+    company.name AS company_name
+    FROM user
+    INNER JOIN company ON user.company_id=company.id
+    WHERE user.id=${params.user_id}`;
 };
 module.exports.getUserByEmail = (params) => {
     return `SELECT * FROM user WHERE email='${params.email}' AND valid=1`;

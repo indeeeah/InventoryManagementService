@@ -18,9 +18,9 @@ class Api {
         };
 
 
-        this.get = async (endPoint, params = '') => {
+        this.get = async (endPoint) => {
             try {
-                let apiUrl = `${endPoint}`;
+                let apiUrl = endPoint;
                 console.log(`\n : (Api.get) request to ${apiUrl} \n`);
 
                 let res = await fetch(apiUrl, {
