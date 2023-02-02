@@ -2,6 +2,7 @@
 재고 관리 서비스 프로젝트입니다.
 * name : NiceInventory
 * demo video : [LINK](https://indeeah.tistory.com/46)
+* code info : [LINK](https://indeeah.tistory.com/47)
 
 | version | date |
 |:---------:|:------:|
